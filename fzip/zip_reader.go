@@ -2,18 +2,53 @@ package fzip
 
 import (
 	"archive/zip"
+	"fmt"
 	"io"
 	"os"
 	"path/filepath"
 )
 
-func UnZipPath(zipFile string, deleteZip ...bool) error {
-	r, err := zip.OpenReader(zipFile)
+func UnZipFile(f *os.File) error {
+	fi, err := f.Stat()
 	if err != nil {
 		return err
 	}
-	defer r.Close()
+	r, err := zip.NewReader(f, fi.Size())
+	if err != nil {
+		return err
+	}
+	return readZip(r)
+}
 
+func UnZipPath(zipFile string, deleteZip ...bool) error {
+	f, err := os.Open(zipFile)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+	fi, err := f.Stat()
+	if err != nil {
+		return err
+	}
+	r, err := zip.NewReader(f, fi.Size())
+	if err != nil {
+		return err
+	}
+	if err := readZip(r); err != nil {
+		return err
+	}
+	if len(deleteZip) > 0 && deleteZip[0] {
+		if err := os.Remove(zipFile); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func readZip(r *zip.Reader) error {
+	if r == nil {
+		return fmt.Errorf("не иницилизированный Reader")
+	}
 	for _, f := range r.File {
 		if err := os.MkdirAll(filepath.Dir(f.Name), 0766); err != nil {
 			return err
@@ -33,12 +68,6 @@ func UnZipPath(zipFile string, deleteZip ...bool) error {
 		defer rc.Close()
 		_, err = io.Copy(nf, rc)
 		if err != nil {
-			return err
-		}
-	}
-	//удаление архива
-	if len(deleteZip) > 0 && deleteZip[0] {
-		if err := os.Remove(zipFile); err != nil {
 			return err
 		}
 	}
