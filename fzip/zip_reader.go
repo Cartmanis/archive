@@ -18,6 +18,9 @@ func UnZipPath(zipFile string, deleteZip ...bool) error {
 		if err := os.MkdirAll(filepath.Dir(f.Name), 0766); err != nil {
 			return err
 		}
+		if f.FileInfo().IsDir() {
+			continue
+		}
 		nf, err := os.OpenFile(f.Name, os.O_CREATE|os.O_WRONLY, 0644)
 		if err != nil {
 			return err
