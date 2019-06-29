@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 )
 
-func UnZipPath(zipFile string) error {
+func UnZipPath(zipFile string, deleteZip ...bool) error {
 	r, err := zip.OpenReader(zipFile)
 	if err != nil {
 		return err
@@ -30,6 +30,12 @@ func UnZipPath(zipFile string) error {
 		defer rc.Close()
 		_, err = io.Copy(nf, rc)
 		if err != nil {
+			return err
+		}
+	}
+	//удаление архива
+	if len(deleteZip) > 0 && deleteZip[0] {
+		if err := os.Remove(zipFile); err != nil {
 			return err
 		}
 	}
