@@ -8,16 +8,12 @@ import (
 	"path/filepath"
 )
 
-func UnZipFile(f *os.File) error {
+func UnZipFile(f *os.File) (*zip.Reader, error) {
 	fi, err := f.Stat()
 	if err != nil {
-		return err
+		return nil, err
 	}
-	r, err := zip.NewReader(f, fi.Size())
-	if err != nil {
-		return err
-	}
-	return readZip(r)
+	return zip.NewReader(f, fi.Size())
 }
 
 func UnZipPath(zipFile string, deleteZip ...bool) error {
