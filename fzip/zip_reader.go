@@ -46,7 +46,7 @@ func readZip(r *zip.Reader, unZipDir string) error {
 		return fmt.Errorf("не иницилизированный Reader")
 	}
 	for _, f := range r.File {
-		if err := os.MkdirAll(filepath.Dir(f.Name), 0766); err != nil {
+		if err := os.MkdirAll(unZipDir, 0766); err != nil {
 			return err
 		}
 		if f.FileInfo().IsDir() {
