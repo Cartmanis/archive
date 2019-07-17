@@ -16,7 +16,7 @@ func UnZipFile(f *os.File) (*zip.Reader, error) {
 	return zip.NewReader(f, fi.Size())
 }
 
-func UnZipPath(zipFile string, deleteZip ...bool) error {
+func UnZipPath(zipFile string, unZipDir string, deleteZip ...bool) error {
 	f, err := os.Open(zipFile)
 	if err != nil {
 		return err
@@ -30,7 +30,7 @@ func UnZipPath(zipFile string, deleteZip ...bool) error {
 	if err != nil {
 		return err
 	}
-	if err := readZip(r); err != nil {
+	if err := readZip(r, unZipDir); err != nil {
 		return err
 	}
 	if len(deleteZip) > 0 && deleteZip[0] {
@@ -41,7 +41,7 @@ func UnZipPath(zipFile string, deleteZip ...bool) error {
 	return nil
 }
 
-func readZip(r *zip.Reader) error {
+func readZip(r *zip.Reader, unZipDir string) error {
 	if r == nil {
 		return fmt.Errorf("не иницилизированный Reader")
 	}
@@ -52,7 +52,8 @@ func readZip(r *zip.Reader) error {
 		if f.FileInfo().IsDir() {
 			continue
 		}
-		nf, err := os.OpenFile(f.Name, os.O_CREATE|os.O_WRONLY, 0644)
+		nf, err := os.OpenFile(filepath.Join(unZipDir, f.Name),
+			os.O_CREATE|os.O_WRONLY, 0644)
 		if err != nil {
 			return err
 		}
