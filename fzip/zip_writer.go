@@ -9,8 +9,38 @@ import (
 	"path/filepath"
 )
 
+type NameReader struct {
+	Name   string
+	Reader io.Reader
+}
+
 type listPathFiles struct {
 	list []string
+}
+
+func Zip(listNameReader []*NameReader, w io.Writer) error {
+	zipWriter := zip.NewWriter(w)
+	if listNameReader == nil {
+		return fmt.Errorf("empty slice NameReader")
+	}
+
+	for _, f := range listNameReader {
+		if f == nil || f.Reader == nil || f.Name == "" {
+			continue
+		}
+		zipEntry, err := zipWriter.Create(f.Name)
+		if err != nil {
+			return err
+		}
+		_, err = io.Copy(zipEntry, f.Reader)
+		if err != nil {
+			return err
+		}
+	}
+	if err := zipWriter.Close(); err != nil {
+		return err
+	}
+	return nil
 }
 
 func ZipFiles(files []*os.File, zipFile io.Writer) error {
