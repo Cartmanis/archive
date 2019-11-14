@@ -9,7 +9,7 @@ import (
 	"path/filepath"
 )
 
-//NameReader структура для метода Zip. Name - имя файла Reader - содержимое файла
+//NameReader структура, необходимая для функции Zip. Кроме обычного Reader принимает имя файла.
 type NameReader struct {
 	//Имя файла
 	Name string
@@ -144,7 +144,7 @@ func checkUniqueFilesName(listFiles []*os.File) error {
 
 func zipFilesFromDir(listFiels []*os.File, listDirs []*os.File, zipFile io.Writer) error {
 	writerZip := zip.NewWriter(zipFile)
-	
+
 	defer writerZip.Close()
 
 	for _, file := range listFiels {
@@ -201,7 +201,6 @@ func getFilesInDir(pathDir string, files *listPathFiles) error {
 	}
 	return nil
 }
-
 func fillFilesFromStringDirs(listPathDirs []string) ([]*os.File, error) {
 	listDirs := make([]*os.File, 0)
 
