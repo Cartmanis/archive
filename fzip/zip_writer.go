@@ -144,6 +144,7 @@ func checkUniqueFilesName(listFiles []*os.File) error {
 
 func zipFilesFromDir(listFiels []*os.File, listDirs []*os.File, zipFile io.Writer) error {
 	writerZip := zip.NewWriter(zipFile)
+	
 	defer writerZip.Close()
 
 	for _, file := range listFiels {

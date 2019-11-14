@@ -43,6 +43,7 @@ func UnZipPath(zipFile string, unZipDir string, deleteZip ...bool) error {
 	return nil
 }
 
+//readZip чтение reader архива
 func readZip(r *zip.Reader, unZipDir string) error {
 	if r == nil {
 		return fmt.Errorf("не иницилизированный Reader")
