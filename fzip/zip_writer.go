@@ -9,8 +9,11 @@ import (
 	"path/filepath"
 )
 
+//NameReader структура для метода Zip. Name - имя файла Reader - содержимое файла
 type NameReader struct {
-	Name   string
+	//Имя файла
+	Name string
+	//Reader - содержимое файла
 	Reader io.Reader
 }
 
@@ -18,6 +21,7 @@ type listPathFiles struct {
 	list []string
 }
 
+//Zip архивирование архивов по Reader
 func Zip(listNameReader []*NameReader, w io.Writer) error {
 	zipWriter := zip.NewWriter(w)
 	if listNameReader == nil {
@@ -43,6 +47,7 @@ func Zip(listNameReader []*NameReader, w io.Writer) error {
 	return nil
 }
 
+//ZipFiles архивирование zip архива по файлам
 func ZipFiles(files []*os.File, zipFile io.Writer) error {
 	writerZip := zip.NewWriter(zipFile)
 	defer writerZip.Close()
@@ -67,6 +72,7 @@ func ZipFiles(files []*os.File, zipFile io.Writer) error {
 	return nil
 }
 
+//ZipPath архивирование zip архива по массиву путей до файлов
 func ZipPath(pathFiles []string, pathZip string, deleteFiles ...bool) error {
 	listFiles := make([]*os.File, 0)
 

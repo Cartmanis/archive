@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 )
 
+//UnZipFile разархивирование файла архива zip
 func UnZipFile(f *os.File) (*zip.Reader, error) {
 	fi, err := f.Stat()
 	if err != nil {
@@ -16,6 +17,7 @@ func UnZipFile(f *os.File) (*zip.Reader, error) {
 	return zip.NewReader(f, fi.Size())
 }
 
+//UnZipPath разархивирование файла архива zip по пути
 func UnZipPath(zipFile string, unZipDir string, deleteZip ...bool) error {
 	f, err := os.Open(zipFile)
 	if err != nil {
